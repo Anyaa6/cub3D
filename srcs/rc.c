@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/20 13:20:45 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/19 09:36:48 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/16 12:10:47 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,6 @@ void			set_start_stop(int *stop, double *ytxt, double *step, t_p *p)
 	}
 }
 
-
 void			set_xtxt(t_cubray *ray)
 {
 	ray->xtxt = 0;
@@ -133,26 +132,6 @@ void			set_xtxt(t_cubray *ray)
 		ray->xtxt = 256 * modf(ray->y, &(ray->trash));
 	else if (ray->x == ray->xh && ray->y == ray->yh)
 		ray->xtxt = 256 * modf(ray->x, &(ray->trash));
-}
-
-void			draw_sprite(t_cubspr *spr, t_cubimg *img)
-{
-	int				y0;
-	double			yspr;
-
-	if (spr->x_step >= 0.5)
-		return;
-	yspr = spr->yspr;
-	y0 = spr->y0;
-	while (spr->y0 < spr->yend)//boucle du y de l'img && xspr < 255?
-	{
-		if (img->sp_img[(int)round(spr->xspr) + (int)round(spr->yspr) * img->txt_l] != img->sp_img[0])
-			img->img[spr->i0 + (spr->y0 * img->lsize) ] = img->sp_img[(int)round(spr->xspr) + (int)round(spr->yspr) * img->txt_l];
-		spr->y0++;
-		spr->yspr += spr->step;
-	}
-	spr->y0 = y0;
-	spr->yspr = yspr;
 }
 
 void			draw(int x, t_p *p, t_cubimg *img, t_cubray *ray)
@@ -173,13 +152,50 @@ void			draw(int x, t_p *p, t_cubimg *img, t_cubray *ray)
 		img->y++;
 		ytxt += step;
 	}
-	while (p->spr)
-	{
-		if (p->spr->sp_dist < p->ray->w_dist)
-			draw_sprite(p->spr, p->img);
-		p->spr = p->spr->next;
+}
+
+/*
+   void            draw_sprite(t_p *p, double ytxt, int stop, t_cubimg *img)
+   {
+   p->spr->xspr += p->spr->step;
+   while (p->img->y < stop && p->spr->xspr < 255)
+   {
+   if (img->sp_img[(int)round(p->spr->xspr) + (((int)round(ytxt)) * img->txt_l)] != img->sp_img[0])
+   		img->img[p->ray->i + (img->y * img->lsize)] = img->sp_img[(int)round(p->spr->xspr) + (((int)round(ytxt)) * img->txt_l)];
+   img->y++;
+   ytxt += p->spr->step;
+   }
+   }*/
+
+void			draw_sprite(t_p *p, t_cubspr *spr, t_cubimg *img)
+{
+	int				xstop;
+	int				y0;
+	double			yspr;
+
+	(void)p;
+	y0 = spr->y0;
+	yspr = spr->yspr;
+	xstop = spr->i0 + spr->rays;
+	spr->x_step = 256.0 / (float)spr->rays;
+	//dprintf(1, "rays = %d, i0 = %d, xstop = %d,  y0 = %d, yend = %d\nxspr = %.2f, yspr = %.2f\n", spr->rays, spr->i0, xstop, spr->y0, spr->yend, spr->xspr, spr->yspr);
+	while (spr->i0 < xstop)//boucle du x de l'img
+	{	
+		while (spr->y0 < spr->yend)//boucle du y de l'img
+		{
+			if (img->sp_img[(int)round(spr->xspr) + (int)round(spr->yspr) * img->txt_l] != img->sp_img[0])
+				img->img[spr->i0 + (spr->y0 * img->lsize) ] = img->sp_img[(int)round(spr->xspr) + (int)round(spr->yspr) * img->txt_l];
+			spr->y0++;
+			spr->yspr += spr->step;
+		}
+		spr->y0 = y0;
+		spr->yspr = yspr;
+	//	dprintf(1, "spr->y0 = %d\n", spr->y0);
+		spr->i0++;
+		//dprintf(1, "spr->i0 = %d\n", spr->i0);
+		spr->xspr += spr->x_step;
+		//dprintf(1, "spr->xspr = %.2f\n", spr->xspr);
 	}
-	//dprintf(1, "img->y = %d, stop = %d, wall hgt = %.2f\n", img->y,stop, ray->w_hgt);
 }
 
 void			raycasting(t_cub3d *cub, t_cubimg *img, t_cubray *ray, t_p *p)
@@ -195,12 +211,29 @@ void			raycasting(t_cub3d *cub, t_cubimg *img, t_cubray *ray, t_p *p)
 		set_x_y_direction(ray);
 		ray->i++;
 	}
-	//display_list(p->spr, p);
+	while (p->spr)
+	{
+		draw_sprite(p, p->spr, p->img);
+		p->spr = p->spr->next;
+	}
+	display_list(p->spr, p);
 	del_list(&(p->spr), p);
+	//free(list) FONCTION A CREER POUR QU"A CHAQUE TOUR LISTE VIERGE
+	//ne pas oublier de free et set a null p->first au prochain tour sinon il ne rentrera pas dans if (!(p->first))
 }
 
+
+
+
+
+
+
+
+
+
+
+
 //voir ce au'il se passe quand FOV = 90 ou 180 ou 270...
-// il faudra garder la valeur du dernier x pour avoir une image qui reprendra a la meme colonne du mur
 //dprintf(1, "spr->xf = %.2f, spr->yf = %.2f, xspr = %d\n", p->spr->xf, p->spr->yf, p->spr->xspr);
 /*
    if (p->hv == 'v')
@@ -209,3 +242,43 @@ void			raycasting(t_cub3d *cub, t_cubimg *img, t_cubray *ray, t_p *p)
    p->spr->xspr = 256 * modf(p->spr->xf, &(p->ray->trash));
    */	
 
+/*
+   while (p->spr)
+   {
+   set_start_stop_spr(&stop, &ytxt, p->cub, p);// pas besoin, le calculer une seule fois
+   if (p->spr->i == ray->i)
+   draw_sprite(p, ytxt, stop, img);
+   p->spr = p->spr->next;
+   }*/
+//dprintf(1, "img->y = %d, stop = %d, wall hgt = %.2f\n", img->y,stop, ray->w_hgt);
+
+/*
+   void			set_start_stop_spr(int *stop, double *ytxt, t_cub3d *cub, t_p *p)
+   {
+   if (p->spr->sp_hgt < cub->r_hgt)
+   {
+ *ytxt = 0.0;
+ p->img->y = abs((cub->r_hgt - (int)floor(p->spr->sp_hgt))) / 2;
+ }
+ else
+ {	
+ *ytxt = ((p->spr->sp_hgt - (float)(cub->r_hgt)) / 2) * p->spr->step;
+ p->img->y = 0;
+ }
+ *stop = cub->r_hgt - p->img->y;
+ }*/
+
+/*
+ *
+ void			draw_sprite(t_p *p, double ytxt, int stop, t_cubimg *img)
+ {
+ p->spr->xspr += p->spr->step;
+ while (p->img->y < stop && p->spr->xspr < 255)
+ {
+ if (img->sp_img[(int)round(p->spr->xspr) + (((int)round(ytxt)) * img->txt_l)] != img->sp_img[0])
+ img->img[p->ray->i + (img->y * img->lsize)] = img->sp_img[(int)round(p->spr->xspr) + (((int)round(ytxt)) * img->txt_l)];
+ img->y++;
+ ytxt += p->spr->step;
+ }
+ }
+ */

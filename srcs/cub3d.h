@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/06 10:15:30 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/12 14:33:42 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/18 15:20:10 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,17 @@ typedef struct	s_cubspr {
 	double				sp_dist;
 	double				sp_hgt;
 	double				step;
-	double					xspr;
-	int					i;//pour identifier le maillon a la fin d'une image contient le dernier rayon qui a "vu" le sprite
+	double				x_step;
+	int					i0;//numero du premier rayon q touche spr
+	int					y0;//y pour img[]
+	int					yend;
+	double				xspr;
+	double				yspr;
+	double				dx;//delta de x au centre du sprite
+	double				dy;
+	double				delta;//angle a la droite passant par milieu du sprite
+	double				cdel;
+	double				beta;//angle interne entre alpha et delta
 	char				hv;
 	struct s_cubspr		*next;
 }				t_cubspr;
@@ -164,6 +173,7 @@ int					display(t_p *p);
 
 //cub3d_display_sprites.c
 void			add_sprite(t_cubspr **spr, t_p *p, double yf, double xf);
+void			del_if_further(t_p *p, t_cubray *ray, t_cubspr **spr);
 
 //cub3d_display_ray_wall_hgt.c
 void			first_h_intersection(t_cubray *ray);

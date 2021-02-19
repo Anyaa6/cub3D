@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/05 09:24:35 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/18 15:30:14 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/16 12:00:10 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,83 +18,46 @@
 
 void            del_if_further(t_p *p, t_cubray *ray, t_cubspr **spr)
 {
-	t_cubspr        *to_remove;
+    t_cubspr        *to_remove;
 
-	(*spr) = p->first;
-	if ((*spr)->sp_dist >= ray->w_dist)
-	{
-		to_remove = *spr;
-		*spr = (*spr)->next;
-		p->first = *spr;
-		free(to_remove);
-	}
-	else
-	{
-		while ((*spr)->next)
-		{
-			if ((*spr)->next->sp_dist >= ray->w_dist)
-			{
-				to_remove = (*spr)->next;
-				if ((*spr)->next->next)
-					(*spr)->next = (*spr)->next->next;
-				free(to_remove);
-			}
-			(*spr) = (*spr)->next;
-		}
-	}
-	(*spr) = p->first;
+    (*spr) = p->first;
+    if ((*spr)->sp_dist >= ray->w_dist)
+    {
+        to_remove = *spr;
+        *spr = (*spr)->next;
+        p->first = *spr;
+        free(to_remove);
+    }
+    else
+    {
+        while ((*spr)->next)
+        {
+            if ((*spr)->next->sp_dist >= ray->w_dist)
+            {
+                to_remove = (*spr)->next;
+                if ((*spr)->next->next)
+                    (*spr)->next = (*spr)->next->next;
+                free(to_remove);
+            }
+            (*spr) = (*spr)->next;
+        }
+    }
+    (*spr) = p->first;
 }
 
 void            set_start_stop_spr(t_p *p, t_cubspr *node)
 {
-	if (node->sp_hgt < p->cub->r_hgt)
-	{
-		node->yspr = 0.0;
-		node->y0 = abs((p->cub->r_hgt - (int)floor(node->sp_hgt))) / 2;
-	}
-	else
-	{
-		node->yspr = ((node->sp_hgt - (float)(p->cub->r_hgt)) / 2) * node->step;
-		node->y0 = 0;
-	}
-	node->yend = p->cub->r_hgt - node->y0;
-}
-
-void		mesures_to_sprcenter(t_p *p, t_cubspr *node)
-{
-	double				x;
-	double				y;
-
-	x = floor(node->xf) + 0.5;
-	y = floor(node->yf) + 0.5;
-	node->dx = x - p->ray->x0;
-	node->dy = y - p->ray->y0;
-	node->delta = fabs(acos(fabs(node->dx) / node->sp_dist));
-	node->cdel = node->delta;
-	if (node->dx < 0.0 && node->dy < 0.0)
-		node->cdel = fabs(rad(180.0) - node->cdel);
-	else if (node->dx <= 0.0 && node->dy > 0.0)
-		node->cdel += rad(180.0);
-	else if (node->dx >= 0.0 && node->dy >= 0.0)
-		node->cdel = fabs(rad(360.0) - node->cdel);
-}
-
-void		xspr_step(t_p *p, t_cubspr *spr)
-{
-	double			fov;
-
-	fov = p->ray->fov;
-	if (deg(p->ray->fov) > 90.0 && deg(p->ray->fov) <= 270.0)
-		fov = fabs(p->ray->fov - rad(180.0));
-	else if (deg(p->ray->fov) > 270.0 && deg(p->ray->fov) <= 360)
-		fov = fabs(p->ray->fov - rad(360.0));
-	spr->beta = fabs(spr->cdel - p->ray->fov);
-	spr->x_step = fabs(tan(spr->beta)) * spr->sp_dist;
-	if (spr->cdel <= p->ray->fov)
-		spr->xspr = 256.0 * fabs(0.50 - spr->x_step);
-	else if (spr->cdel > p->ray->fov)
-		spr->xspr = 256.0 * (spr->x_step + 0.50);
-
+    if (node->sp_hgt < p->cub->r_hgt)
+    {
+        node->yspr = 0.0;
+        node->y0 = abs((p->cub->r_hgt - (int)floor(node->sp_hgt))) / 2;
+    }
+    else
+    {
+        node->yspr = ((node->sp_hgt - (float)(p->cub->r_hgt)) / 2) * node->step;
+        node->y0 = 0;
+    }
+    node->yend = p->cub->r_hgt - node->y0;
 }
 
 t_cubspr	*new_node(t_p *p, double yf, double xf, double dist)
@@ -105,6 +68,7 @@ t_cubspr	*new_node(t_p *p, double yf, double xf, double dist)
 		error (16, p);
 	node->next = NULL;
 	node->i0 = p->ray->i;
+	node->rays = 1;
 	node->xf = xf;
 	node->yf = yf;
 	node->x = (int)floor(xf);
@@ -116,10 +80,14 @@ t_cubspr	*new_node(t_p *p, double yf, double xf, double dist)
 		node->hv = 'h';
 	else if (p->hv == 'v')
 		node->hv = 'v';
-	node->xspr = 0.0;//a enlever et remplacer par fonction de calcul
+	node->xspr = 0.0;
+	/*
+	if (p->hv == 'v')
+        node->xspr = 256.0 * modf(node->yf, &(p->ray->trash));
+    else if (p->hv == 'h')
+        node->xspr = 256.0 * modf(node->xf, &(p->ray->trash));
+		*/
 	set_start_stop_spr(p, node);
-	mesures_to_sprcenter(p, node);
-	xspr_step(p, node);
 	return (node);
 }
 
@@ -136,8 +104,7 @@ int			already_exists(t_cubspr *spr, t_p *p, double yf, double xf)
 		{
 			spr->xf = xf;//inutile mais pour se reperer
 			spr->yf = yf;
-			spr->i0 = p->ray->i;
-			xspr_step(p, spr);
+			spr->rays++;
 			return (1);
 		}
 		spr = spr->next;
@@ -146,7 +113,7 @@ int			already_exists(t_cubspr *spr, t_p *p, double yf, double xf)
 	return (0);
 }
 
-double		dist_to_center(double yf, double xf, t_p *p)
+int			dist_to_center(double yf, double xf, t_p *p)
 {
 	double			dist;
 
@@ -194,26 +161,4 @@ void		add_sprite(t_cubspr **spr, t_p *p, double yf, double xf)
 	*spr = p->first;
 }
 
-//dprintf(1, "x = %d, spr->x = %d, y = %d, spr->y = %d\n", x, (spr)->x,  y, (spr)->y);
-/*
-   if (p->ray->i < 500)
-   spr->xspr = 256.0 * fabs(0.50 - spr->x_step);
-   else
-   spr->xspr = 256.0 * (spr->x_step + 0.50);
-   */
-/*
-   if ((fov > rad(0.0) && fov <= rad(90.0)) || (fov > rad(180.0) && fov <= rad(270.0)))
-   {
-   if (spr->delta < fov)
-   spr->xspr = 256.0 * fabs(0.50 - spr->x_step);
-   else if (spr->delta >= fov)
-   spr->xspr = 256.0 * (spr->x_step + 0.50);
-   }
-   else if ((fov > rad(90.0) && fov <= rad(180.0)) || (fov > rad(270.0) && fov <= rad(360.0)))
-   {
-   if (spr->delta < fov)
-   spr->xspr = 256.0 * (spr->x_step + 0.50);
-   else if (spr->delta >= fov)
-   spr->xspr = 256.0 * fabs(0.50 - spr->x_step);
-   }
-   */
+			//dprintf(1, "x = %d, spr->x = %d, y = %d, spr->y = %d\n", x, (spr)->x,  y, (spr)->y);

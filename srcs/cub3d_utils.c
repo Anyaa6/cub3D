@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/07 13:42:26 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/12 13:24:07 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/16 11:18:12 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void			display_list(t_cubspr *spr, t_p *p)
 	while (spr)
 	{
 		dprintf(1, "\n=============================================\n");
-		dprintf(1, "i = %d\n", spr->i);
+		dprintf(1, "i0 = %d\n", spr->i0);
 		dprintf(1, "x0 = %.2f ", p->ray->x0); 
 		dprintf(1, "y0 = %.2f\n", p->ray->y0);
 		dprintf(1, "x = %d ", spr->x);
@@ -89,7 +89,7 @@ void			display_list(t_cubspr *spr, t_p *p)
 		dprintf(1, "w_dist = %.2f \n", p->ray->w_dist); 
 		dprintf(1, "sp_hgt = %.2f ", spr->sp_hgt);
 		dprintf(1, "step = %.2f ", spr->step);
-		dprintf(1, "xspr = %d ", spr->xspr);
+		dprintf(1, "xspr = %.2f ", spr->xspr);
 		dprintf(1, "next = %p\n", spr->next);
 		dprintf(1, "\n=============================================\n");
 		spr = spr->next; 
