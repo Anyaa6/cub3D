@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/01 17:04:06 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/10 10:04:57 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/19 12:57:33 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,5 +144,6 @@ void        get_map(int fd, t_p *p, char *line)
 	map_is_closed(p->cub, p);
 	clean_map_wid_hgt(p->cub);
 	free_set_null(&map);
+	free_set_null(&line);
 	display_map(p->cub);// a enlever
 }
