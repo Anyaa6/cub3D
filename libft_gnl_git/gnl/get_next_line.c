@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/06 14:59:12 by abonnel           #+#    #+#             */
-/*   Updated: 2021/01/15 14:50:52 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/25 14:23:49 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,15 @@ int				n_in(char *str)
 }
 
 void			free_set_null(char **ptr)
+{
+	if (*ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+	}
+}
+
+void			free_set_null_void(void **ptr)
 {
 	if (*ptr)
 	{

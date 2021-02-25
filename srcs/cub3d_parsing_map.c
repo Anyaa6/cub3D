@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/01 17:04:06 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/19 12:57:33 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/19 13:14:15 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,6 @@ void		map_wid_hgt(char *map, t_cub3d *cub)
 		line_len = 0;
 	}
 	cub->map_h = line_nb;
-	//dprintf(1, "line nb = %d\n", line_nb);
-	//dprintf(1, "map wid = %d, map height = %d\n", cub->map_w, cub->map_h);
 }
 
 void		create_map(char *map, t_cub3d *cub, t_p *p)
@@ -83,15 +81,15 @@ void		create_map(char *map, t_cub3d *cub, t_p *p)
 	while (y < cub->map_h)
 	{
 		if (!(cub->map[y] = (char *)malloc(sizeof(char) * cub->map_w + 1)))
-			error (14, p);
+			error(14, p);
 		x = 0;
-		while (map[i + x] != '\n' && map[i + x]) //copie la line
+		while (map[i + x] != '\n' && map[i + x])
 		{
 			cub->map[y][x] = map[i + x];
 			x++;
 		}
-		i += x + 1;//avancer au dela de \n
-		while (x <= cub->map_w) //rempli de \0 jusqu'a la fin
+		i += x + 1;
+		while (x <= cub->map_w)
 			cub->map[y][x++] = '\0';
 		y++;
 	}
@@ -113,7 +111,7 @@ void		clean_map_wid_hgt(t_cub3d *cub)
 	{
 		line_len = ft_strlen(cub->map[y]) - 1;
 		while (line_len >= 0 && cub->map[y][line_len] == ' ')
-			cub->map[y][line_len--] = '\0';//ajout de \0 a la place des espaces de fin de ligne
+			cub->map[y][line_len--] = '\0';
 		line_len = ft_strlen(cub->map[y]);
 		if (line_len > cub->map_w)
 			cub->map_w = line_len;
@@ -122,10 +120,9 @@ void		clean_map_wid_hgt(t_cub3d *cub)
 	while (cub->map[y - 1][0] == '\0')
 		y--;
 	cub->map_h = y;
-	//dprintf(1, "after cleaning map :\nmap wid = %d, map height = %d\n", cub->map_w, cub->map_h);
 }
 
-void        get_map(int fd, t_p *p, char *line)
+void		get_map(int fd, t_p *p, char *line)
 {
 	char			*map;
 	int				gnl_return;
@@ -137,7 +134,6 @@ void        get_map(int fd, t_p *p, char *line)
 		map = strjoin_free1(map, "\n");
 		free_set_null(&line);
 	}
-	//printf("%s = map\n", map);
 	check_map_char(map, p);
 	map_wid_hgt(map, p->cub);
 	create_map(map, p->cub, p);
@@ -145,5 +141,4 @@ void        get_map(int fd, t_p *p, char *line)
 	clean_map_wid_hgt(p->cub);
 	free_set_null(&map);
 	free_set_null(&line);
-	display_map(p->cub);// a enlever
 }

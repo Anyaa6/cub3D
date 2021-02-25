@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/01 15:32:08 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/02 17:04:36 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/19 13:41:18 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void			move_front_back(int keycode, t_cub3d *cub)
 {
-	if (keycode == 13 || keycode == 126)//forward W
+	if (keycode == 13 || keycode == 126)
 	{
 		if (cub->dir > 90.0 && cub->dir < 270.0)
 			cub->x0 -= 0.4 * fabs(cos(rad(cub->dir)));
@@ -25,7 +25,7 @@ void			move_front_back(int keycode, t_cub3d *cub)
 		else if (cub->dir > 180.0 && cub->dir < 360.0)
 			cub->y0 += 0.4 * fabs(sin(rad(cub->dir)));
 	}
-	else if (keycode == 1 || keycode == 125)// back S
+	else if (keycode == 1 || keycode == 125)
 	{
 		if (cub->dir > 90.0 && cub->dir < 270.0)
 			cub->x0 += 0.4 * fabs(cos(rad(cub->dir)));
@@ -59,7 +59,7 @@ void			move_right(t_cub3d *cub)
 	double			dir_bis;
 
 	if ((dir_bis = cub->dir - 90.0) <= 0.0)
-		dir_bis += 360.0;//right
+		dir_bis += 360.0;
 	if (dir_bis >= 90.0 && dir_bis <= 270.0)
 		cub->x0 -= 0.4 * fabs(cos(rad(dir_bis)));
 	else if (dir_bis < 90.0 || dir_bis > 270.0)
@@ -72,12 +72,12 @@ void			move_right(t_cub3d *cub)
 
 void			rotation(int keycode, t_cub3d *cub)
 {
-	if (keycode == 123)//left
+	if (keycode == 123)
 	{
 		if ((cub->dir += 3.0) >= 360.0)
 			cub->dir -= 360.0;
 	}
-	else if (keycode == 124)//right
+	else if (keycode == 124)
 	{
 		if ((cub->dir -= 3.0) < 0.0)
 			cub->dir += 360.0;

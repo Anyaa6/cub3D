@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/08 09:27:15 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/02 17:03:47 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/19 13:15:40 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ int			check_res_input(char *line, int size, t_p *p)
 	return (0);
 }
 
-void        parsing_error(char *argv1, char *line, t_p *p)
+void		parsing_error(char *argv1, char *line, t_p *p)
 {
-	int             av_l;
+	int				av_l;
 
 	av_l = ft_strlen(argv1);
 	if (!(argv1[--av_l] == 'b' && argv1[--av_l] == 'u' && argv1[--av_l] == 'c' \
@@ -54,7 +54,6 @@ int			check_each_triplets(char *line, int *i, int digit_nb, int triplet)
 		*i += 1;
 		digit_nb++;
 	}
-	//printf("digit_nb = %d and triplet = %d\n", digit_nb, triplet);
 	if (digit_nb > 3 || digit_nb < 1)
 		return (1);
 	if (triplet < 2)
@@ -73,10 +72,7 @@ int			check_floor_ceiling_clr_input(char *line)
 	int				i;
 	int				triplet;
 
-	//printf("line = %s\n", line);
 	i = skip_space(line + 1) + 1;
-	//printf("i = %d\n", i);
-	//printf("line + i = %s\n", line + i);
 	digit_nb = 0;
 	triplet = 0;
 	while (line[i])

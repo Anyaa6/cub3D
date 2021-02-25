@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/08 09:05:45 by abonnel           #+#    #+#             */
-/*   Updated: 2021/01/15 14:51:03 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/25 14:24:04 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,6 @@ void			*ft_calloc(size_t count, size_t size);
 int				get_next_line(int fd, char **line);
 void			*ft_calloc(size_t count, size_t size);
 void			free_set_null(char **ptr);
+void			free_set_null_void(void **ptr);
 
 #endif

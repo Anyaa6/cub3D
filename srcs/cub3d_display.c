@@ -6,58 +6,13 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/18 10:04:38 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/12 10:07:07 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/25 13:54:03 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
 
-// offset si img_str caste en int * : x + y * line_size / 4;
-
-void		init_img_sprite(t_cub3d *cub, t_cubimg *img, t_p *p)
-{
-	if ((img->p_img = mlx_new_image(cub->mlx_p, cub->r_wid, cub->r_hgt)) \
-			== NULL)
-		error(12, p);
-	img->img = (int *)mlx_get_data_addr(img->p_img, &img->bits, &img->lsize, \
-			&img->endian);
-	img->lsize /= 4;
-	if ((img->p_sp = mlx_xpm_file_to_image(cub->mlx_p, cub->sp, &img->imgs_w, \
-					&img->imgs_h)) == NULL)
-		error(13, p);
-	img->sp_img = (int*)mlx_get_data_addr(img->p_sp, &img->txt_b, &img->txt_l, \
-			&img->txt_e); 
-	//rajouter une ligne pour determiner d'emblee la valeur des pixels rose a ne pas afficher?
-}
-
-//lsize / 4 car tableau caste en int
-void		init_imgs(t_cub3d *cub, t_cubimg *img, t_p *p)
-{
-	init_img_sprite(cub, img, p);
-	if ((img->p_no = mlx_xpm_file_to_image(cub->mlx_p, cub->no, &img->imgs_w, \
-					&img->imgs_h)) == NULL)
-		error(13, p);
-	img->no_img = (int*)mlx_get_data_addr(img->p_no, &img->txt_b, &img->txt_l, \
-			&img->txt_e); 
-	if ((img->p_so = mlx_xpm_file_to_image(cub->mlx_p, cub->so, &img->imgs_w, \
-                    &img->imgs_h)) == NULL)
-        error(13, p);
-    img->so_img = (int*)mlx_get_data_addr(img->p_so, &img->txt_b, &img->txt_l, \
-            &img->txt_e);
-	if ((img->p_ea = mlx_xpm_file_to_image(cub->mlx_p, cub->ea, &img->imgs_w, \
-                    &img->imgs_h)) == NULL)
-        error(13, p);
-    img->ea_img = (int*)mlx_get_data_addr(img->p_ea, &img->txt_b, &img->txt_l, \
-            &img->txt_e);
-	if ((img->p_we = mlx_xpm_file_to_image(cub->mlx_p, cub->we, &img->imgs_w, \
-                    &img->imgs_h)) == NULL)
-        error(13, p);
-    img->we_img = (int*)mlx_get_data_addr(img->p_we, &img->txt_b, &img->txt_l, \
-            &img->txt_e);
-    img->txt_l /= 4;
-}
-
-void		draw_top_floor(t_cub3d *cub, t_cubimg *img)
+void		draw_top(t_cub3d *cub, t_cubimg *img)
 {
 	int				x;
 	int				y;
@@ -74,6 +29,15 @@ void		draw_top_floor(t_cub3d *cub, t_cubimg *img)
 		y++;
 		x = 0;
 	}
+}
+
+void		draw_floor(t_cub3d *cub, t_cubimg *img)
+{
+	int				x;
+	int				y;
+
+	y = cub->r_hgt / 2;
+	x = 0;
 	while (y < cub->r_hgt)
 	{
 		while (x < cub->r_wid)
@@ -86,11 +50,74 @@ void		draw_top_floor(t_cub3d *cub, t_cubimg *img)
 	}
 }
 
+void		top_txt(t_cub3d *cub, t_cubimg *img)
+{
+	int				x;
+	int				y;
+	int				xtxt;
+	int				ytxt;
+
+	y = 0;
+	x = 0;
+	ytxt = 0;
+	xtxt = 0;
+	while (y < cub->r_hgt / 2)
+	{
+		while (x < cub->r_wid)
+		{
+			img->img[x + y * img->lsize] = img->sk_img[xtxt + ytxt * \
+				img->txt_l];
+			xtxt = ++x % 255;
+		}
+		ytxt = ++y % 255;
+		x = 0;
+		xtxt = 0;
+	}
+}
+
+void		fl_txt(t_cub3d *cub, t_cubimg *img)
+{
+	int				x;
+	int				y;
+	int				xtxt;
+	int				ytxt;
+
+	y = cub->r_hgt / 2;
+	x = 0;
+	ytxt = 0;
+	xtxt = 0;
+	while (y < cub->r_hgt)
+	{
+		while (x < cub->r_wid)
+		{
+			img->img[x + y * img->lsize] = \
+				img->fl_img[xtxt + ytxt * img->txt_l];
+			xtxt = ++x % 255;
+		}
+		ytxt = ++y % 255;
+		x = 0;
+		xtxt = 0;
+	}
+}
+
 int			display(t_p *p)
 {
-	init_imgs(p->cub, p->img, p);
-	draw_top_floor(p->cub, p->img);
+	new_img(p->cub, p->img, p);
+	if (p->cub->top_s == NULL)
+		draw_top(p->cub, p->img);
+	else
+		top_txt(p->cub, p->img);
+	if (p->cub->fl_s == NULL)
+		draw_floor(p->cub, p->img);
+	else
+		fl_txt(p->cub, p->img);
 	raycasting(p->cub, p->img, p->ray, p);
 	mlx_put_image_to_window(p->cub->mlx_p, p->cub->win_p, p->img->p_img, 0, 0);
+	if (p->cub->r_wid > 231 && p->cub->r_hgt > 91)
+		mlx_put_image_to_window(p->cub->mlx_p, p->cub->win_p, p->img->p_lb, \
+				p->cub->r_wid - 230, p->cub->r_hgt - 50);
+	if (p->cub->r_wid > 231 && p->cub->r_hgt > 35)
+		mlx_put_image_to_window(p->cub->mlx_p, p->cub->win_p, p->img->p_hu, \
+				10, 10);
 	return (1);
 }

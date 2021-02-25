@@ -6,16 +6,19 @@
 #    By: abonnel <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/01/07 16:11:01 by abonnel           #+#    #+#              #
-#    Updated: 2021/02/03 14:54:57 by abonnel          ###   ########lyon.fr    #
+#    Updated: 2021/02/24 08:48:46 by abonnel          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS_FILES	= cub3d.c cub3d_utils.c \
+SRCS_FILES	= cub3d.c cub3d_utils.c cub3d_utils_spr.c \
 			  cub3d_parsing.c cub3d_parsing_errors.c cub3d_parsing_map.c \
 			  cub3d_parsing_closed_map.c \
 			  cub3d_display.c cub3d_display_raycasting.c \
 			  cub3d_display_ray_wall_hgt.c cub3d_movements.c \
-			  cub3d_error_handling.c cub3d_display_sprites.c
+			  cub3d_error_handling.c cub3d_display_sprites.c \
+			  cub3d_display_raycasting_utils.c cub3d_parsing_utils.c \
+			  cub3d_display_sprites_math.c cub3d_display_utils.c \
+			  cub3d_utils_main.c cub3d_save.c cub3d_bonus.c
 
 SRCSPATH= srcs/
 
@@ -46,12 +49,6 @@ previous:
 			$(MAKE) -C ./libft_gnl_git
 			$(MAKE) -C ./minilibx_mms_20200219
 			cp minilibx_mms_20200219/libmlx.dylib .
-
-test:
-			gcc -Wall -Wextra srcs/testsbasic.c -L. -lmlx -Llibft_gnl_git -lft
-
-writing:
-			gcc -Wall -Wextra srcs/writinginimage.c -L. -lmlx -Llibft_gnl_git -lft
 
 all:		$(NAME)
 
