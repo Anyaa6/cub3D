@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/06 15:29:18 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/25 13:56:59 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/26 12:21:06 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,16 @@ void		floor_ceiling_color(t_cub3d *cub, char *line, int i, t_p *p)
 	}
 	if (check_floor_ceiling_clr_input(line) == 1)
 		error(8, p);
-	r = ft_atoi(line + i);
+	if ((r = ft_atoi(line + i)) > 255)
+		r = 255;
 	while (line[i] != ',' && line[i])
 		i++;
-	g = ft_atoi(line + (++i));
+	if ((g = ft_atoi(line + (++i))) > 255)
+		g = 255;
 	while (line[i] != ',' && line[i])
 		i++;
-	b = ft_atoi(line + i + 1);
+	if ((b = ft_atoi(line + i + 1)) > 255)
+		b = 255;
 	if (line[0] == 'F')
 		cub->floor = (r * 65536) + (g * 256) + b;
 	else

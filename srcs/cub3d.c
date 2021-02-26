@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/06 11:59:03 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/25 14:04:29 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/26 09:56:06 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,9 @@ int				main(int argc, char **argv)
 	t_cubray	ray;
 	t_p			p;
 
+	init_cub_img(&cub, &img, &ray, &p);
 	if (argc < 2 || argc > 3)
 		error(20, &p);
-	init_cub_img(&cub, &img, &ray, &p);
 	parsing_cub(argv[1], &p);
 	init_mlx(&cub);
 	init_imgs(p.cub, p.img, &p);

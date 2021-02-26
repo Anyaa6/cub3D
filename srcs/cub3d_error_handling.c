@@ -6,7 +6,7 @@
 /*   By: abonnel <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/01 15:37:43 by abonnel           #+#    #+#             */
-/*   Updated: 2021/02/25 14:19:40 by abonnel          ###   ########lyon.fr   */
+/*   Updated: 2021/02/26 12:20:20 by abonnel          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void			error_0(int e_type)
 	else if (e_type == 5)
 		printf("Wrong element name in map file");
 	else if (e_type == 6)
-		printf("Wrong number of elements in map file");
+		printf("Map not formated correctly");
 	else if (e_type == 7)
 		printf("Map file does not end with .cub");
 	else if (e_type == 8)
@@ -45,7 +45,7 @@ void			error_1(int e_type)
 	else if (e_type == 12)
 		printf("Image could not be loaded");
 	else if (e_type == 13)
-		printf("Texture could not be loaded, possibly wrong path");
+		printf("Floor/ceiling could not be loaded, possibly wrong path");
 	else if (e_type == 14)
 		printf("Malloc issue while creating map");
 	else if (e_type == 15)
@@ -53,7 +53,7 @@ void			error_1(int e_type)
 	else if (e_type == 16)
 		printf("The second argument can only be \"--save\"");
 	else if (e_type == 17)
-		printf("");
+		printf("Wrong screen resolution input");
 	else if (e_type == 18)
 		printf("");
 	else if (e_type == 19)
